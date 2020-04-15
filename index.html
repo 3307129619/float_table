@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset=UTF-8 />
+<title>按钮组</title>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<style>
+    .open-div{
+        margin: 20px 0 0 30px;
+        height: 40px;
+        text-align: center;
+    }
+    .open-div span{
+        float:left;
+        line-height:40px;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+    .open-div input{
+        float:left;
+        width: 200px;
+    }
+    .open-div div{
+        float:left;
+        width: 220px;
+        line-height: 40px;
+    }
+    .open-div textarea{
+        float: left;
+        width: 250px;
+    }
+    .t-hover-shadow {
+        transition: transform .3s ease-in-out, box-shadow .3s cubic-bezier(.47, 0, .745, .715), border .3s linear .1s;
+        border-radius: 5px!important;;
+    }
+
+    .t-hover-shadow:hover {
+        box-shadow: 0 10px 50px rgba(51, 51, 51, .2);
+        -webkit-transform: translateY(-10px);
+        -moz-transform: translateY(-10px);
+        transform: translateY(-10px);
+        border-radius: 5px!important;;
+    }
+    .shadow-hover{
+        box-shadow: 0 10px 20px rgba(51, 51, 51, .2);
+        -webkit-transform: translateY(-10px);
+        -moz-transform: translateY(-10px);
+        transform: translateY(-10px);
+        border-radius: 5px!important;;
+    }
+    .color_type{
+        background-color: #FFB800;
+        color:#fff!important;
+        border-radius: 5px!important;;
+    }
+    .color_game{
+        background-color: #FF5722;
+        color:#fff!important;
+        border-radius: 5px!important;;
+    }
+    .color_click{
+        color: #fff!important;
+        background-color: #1E9FFF!important;
+    }
+    .color_click_black{
+        color: #fff!important;
+        background-color: #393D49!important;
+    }
+
+
+</style>
+<link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css"  media="all">
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+
+</head>
+<body>
+
+<div style='padding:10px'>
+  <div id="table_body"></div>
+</div>
+
+<script>
+tableBaseStyle({
+        elem:"#table_body"
+        ,cols:[
+            {field:"index",name:"字段1",width:3,default:"0"}
+            ,{field:"oxx",name:"字段2",width:2}
+			,{field:"oxs",name:"字段3",width:2}
+			,{field:"oxss",name:"字段4",width:2}
+        ]
+        ,front:[
+            {name:"头部 \/ 字段",width:2}
+            ,{name:"头部1",width:2}
+			,{name:"头部2",width:2}
+			,{name:"头部3",width:2}
+			,{name:"头部4",width:2}
+        ]
+        ,data:[
+            {index:"数据index1",oxx:"数据oxx1",oxss:"数据oxss1",oxs:"数据oxs1"}
+            ,{index:"数据index2",oxx:"数据oxx2",oxss:"数据oxss2",oxs:"数据oxs2"}
+			,{index:"数据index3",oxx:"数据oxx3",oxss:"数据oxss3",oxs:"数据oxs3"}
+			,{index:"数据index4",oxx:"数据oxx4",oxss:"数据oxss4",oxs:"数据oxs4"}
+			,{index:"数据index5",oxx:"数据oxx5",oxss:"数据oxss5",oxs:"数据oxs5"}
+        ]
+    });
+	    /**
+     * Author:Lw
+     * CreateTime : 2019-12-23
+     * Info : 创建一个浮动表格
+     * 讲解：
+     * elem -- 【#table_body】指定原始表格元素选择器（推荐id选择器）
+     * cols -- 【[{}]】 -- 二维数组
+     *      field -- 数据字段【必须】
+     *      name -- 第一栏显示名称【必须】
+     *      width -- 第一栏长度【不填默认为1】
+     *      default -- 数据默认值如果数据不存在或没有值，则填此值【不填默认为空】
+     * front -- 【[{}]】 -- 二维数组
+     *      name -- 头个数据的名称【必须】
+     *      width -- 头个数据的长度【不填默认为1】
+     * data -- 【[{}]】 -- 二维数组
+     *      跟随cols键中的field字段
+     * 需要的class
+     *      .t-hover-shadow
+     *      .t-hover-shadow:hover
+     *      .shadow-hover
+     *      .color_type
+     *      .color_game
+     *      .color_click
+     *      .color_click_black
+     * 需要的function
+     *      hover();
+     *      hoverhide();
+     * 实例：
+     * tableBaseStyle({
+        elem:"#table_body"
+        ,cols:[
+            {field:"index",name:"字段1",width:1,default:"0"}
+            ,{field:"oxx",name:"字段2",width:2}
+        ]
+        ,front:[
+            {name:"头部 \/ 字段"}
+            ,{name:"头部1"}
+        ]
+        ,data:[
+            {index:"数据index1",oxx:"数据oxx1"}
+            ,{index:"数据index2",oxx:"数据oxx2"}
+        ]
+    });
+     */
+    function tableBaseStyle(obj){
+        if(obj.elem == undefined){
+            return layer.msg('没有操作符');
+        }
+        if(obj.cols == undefined || typeof obj.cols != 'object'){
+            return $(obj.elem).html('没有字段');
+        }
+        if(obj.front == undefined || typeof obj.front != 'object'){
+            return $(obj.elem).html('没有开头');
+        }
+        $(obj.elem).html('');
+        var html = "<div class=\"layui-row layui-col-space15\">";
+        //循环得出横列
+        var field =  "list-data";
+        var temp_arr = {};
+        temp_arr.title = {};
+        temp_arr.data = {};
+        temp_arr.front = {};
+        $.each(obj.front,function(key,val){
+            var start_class="table-base-start-"+field+"0";
+            if(key == 0){
+                var data_key = "table-base-start-"+field+key;
+            }else{
+                var data_key = "table-base-list-"+field+key;
+            }
+            if(key == 0){
+                temp_arr.title[0] = val.name.replace(/<[^>]+>/g,"");
+                html += "<div class=\"layui-col-md"+(val.width?val.width:1)+"\">\n" +
+                    "<div class=\"layui-card \">\n" +
+                    "<div class=\"layui-card-header t-hover-shadow table-base-style-"+field+key+"-son\" align=\"center\" id='"+(obj.elem).substr(1)+"_id_table' data-key='"+data_key+"' data-init='true' onmouseover=\"hover(this,0)\" onmouseout=\"hoverhide(this)\">"+val.name+"</div>\n" +
+                    "</div>\n" +
+                    "</div>";
+            }else{
+                html += "<div class=\"layui-col-md"+(val.width?val.width:1)+"\">\n" +
+                    "<div class=\"layui-card \">\n" +
+                    "<div class=\"layui-card-header t-hover-shadow table-base-style-"+field+key+"-son table-base-list "+start_class+"-son\" align=\"center\" data-key='"+data_key+"' onmouseover=\"hover(this,0)\" onmouseout=\"hoverhide(this)\">"+val.name+"</div>\n" +
+                    "</div>\n" +
+                    "</div>";
+            }
+            // temp_arr.title[key] = val.name.replace(/<[^>]+>/g,"");
+            var temp = {};
+            var num = 0;
+            $.each(obj.cols,function(k,v){
+                if(key == 0){
+                    temp_arr.title[k+1] = v.name.replace(/<[^>]+>/g,"");
+                    html += "<div class=\"layui-col-md"+(v.width?v.width:1)+" \">\n" +
+                        "<div class=\"layui-card \">\n" +
+                        "<div class=\"layui-card-header  t-hover-shadow table-base-style-"+v.field+"-son table-base-line "+start_class+"-son\" align=\"center\" data-key='table-base-line-"+v.field+"' onmouseover=\"hover(this,0)\" onmouseout=\"hoverhide(this)\">"+v.name+"</div>\n" +
+                        "</div>\n" +
+                        "</div>";
+                }else{
+                    temp_arr.front[key-1] = val.name.replace(/<[^>]+>/g,"");
+                    temp[0] = val.name.replace(/<[^>]+>/g,"");
+                    temp[k+1] = {};
+                    temp[k+1] = {};
+                    try{
+                        var temp_str = (obj.data[key-1][v.field]);
+                        if(temp_str == undefined){
+                            throw error;
+                        }
+                        var temp_data = "<strong style='font-size: 16px'>"+temp_str+"</strong>";
+                    }catch (e) {
+                        var temp_data = v.default;
+                    }
+                    temp[k+1] = temp_data.replace(/<[^>]+>/g,"");
+                    // temp_arr.data[k][k] = temp_data.replace(/<[^>]+>/g,"");
+                    html += "<div class=\"layui-col-md"+(v.width?v.width:1)+"\">\n" +
+                        "<div class=\"layui-card \">\n" +
+                        "<div class=\"layui-card-header t-hover-shadow table-base-line-"+v.field+"-son table-base-list-"+field+key+"-son\" align=\"center\" data-val=\"table-base-style-"+field+key+"_table-base-style-"+v.field+"\" onmouseover=\"hover(this,0)\" onmouseout=\"hoverhide(this)\">"+temp_data+"</div>\n" +
+                        "</div>\n" +
+                        "</div>";
+                }
+            })
+            if(temp!={} && temp != '{}'){
+                temp_arr.data[key-1] = temp;
+            }
+            html += "<div style='clear:both;'></div>";
+        })
+        html += "</div>";
+        $(obj.elem).html(html);
+        console.log(temp_arr);
+        if(obj.operation != undefined){
+            var operation = "operation("+JSON.stringify(obj.operation)+","+JSON.stringify(temp_arr)+")";
+            $((obj.elem)+"_id_table").attr('onclick',operation);
+        }
+    }
+
+    //操作符
+    function operation(obj,data){
+        var html ="<div style='padding: 5px;'>";
+        $.each(obj,function(key,val){
+            if(val=='export'){
+                html += "<button class='layui-btn layui-btn-warm layui-btn-sm' onclick='excel(this,"+JSON.stringify(data)+")'>数据导出Excel</button>";
+                html += "<div id='download-table-export-body'></div>";
+            }
+        })
+        html += "</div>";
+        layer.open({
+            type: 5,
+            title: false,
+            closeBtn: 0,
+            shadeClose: true,
+            skin: 'yourclass',
+            content: html
+        });
+        // $('#download-table-export').hide();
+    }
+
+    //excel导出
+    /*function excel(self,data){
+        if(self == undefined){
+            return false;
+        }
+        if(getExplorer()=='ie'){
+            return layer.msg('请更换其他浏览器');
+        }
+        var uri = 'data:application/vnd.ms-excel;base64,',
+            template = '<html><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>',
+            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+            format = function(s, c) {
+                return s.replace(/{(\w+)}/g,
+                    function(m, p) { return c[p]; }) };
+        var table = "";
+        table += "<thead><tr>";
+        $.each(data.title,function(key,val){
+            table += "<th>"+val+"</th>";
+        })
+        table += "</tr></thead><tbody>";
+        $.each(data.data,function(key,val){
+            table += "<tr>";
+            $.each(val,function(k,v){
+                table += "<td>"+v+"</td>";
+            })
+            table += "</tr>";
+        })
+        table += "</tbody>";
+        var ctx = {worksheet: name || 'Worksheet', table: table}
+        var href = uri + base64(format(template, ctx));
+        var titleDate= new Date().getTime();
+        console.log(titleDate);
+        var html = "<br><a id='download-table-export' href='"+href+"' download='数据表格"+titleDate+".xls'><button class='layui-btn layui-btn-sm layui-btn-normal'>下载</button></a>&nbsp;&nbsp;<button onclick='layer.closeAll()' class='layui-btn layui-btn-sm layui-btn-normal'>取消</button>";
+        $('#download-table-export-body').html(html);
+        // $('#download-table-export').attr('href', )
+        // $('#download-table-export').attr('target', "_blank")
+        // window.location.href = uri + base64(format(template, ctx))
+        // layer.closeAll();
+    }*/
+
+    //显示浮动
+    function hover(self,id){
+        hoverhide();
+        var key = $(self).attr('data-key');
+        var val = $(self).attr('data-val');
+        var init = $(self).attr('data-init');
+        if(init == undefined){
+            $(self).addClass('color_click');
+        }
+        if(key != undefined){
+            $('.'+key+"-son").each(function(key,val){
+                $(val).addClass('shadow-hover');
+                if(init == undefined){
+                    $(val).addClass('color_click_black');
+                }else{
+                    $(val).parent().find('.table-base-line').addClass('color_type');
+                    $(val).parent().find('.table-base-list').addClass('color_game');
+                }
+            })
+            return true;
+        }
+        if(val != undefined){
+            var key_field = val.split("_");
+            $.each(key_field,function(key,val){
+                $('.'+val+"-son").each(function(k,v){
+                    $(v).addClass('shadow-hover');
+                    if(key == 0){
+                        $(v).addClass('color_game');
+                    }else{
+                        $(v).addClass('color_type');
+                    }
+                })
+            })
+        }
+    }
+	
+	//去除各项class
+    function hoverhide(self){
+        $('.t-hover-shadow').each(function(key,val){
+            $(val).removeClass('shadow-hover');
+            $(val).removeClass('color_type');
+            $(val).removeClass('color_game');
+            $(val).removeClass('color_click');
+            $(val).removeClass('color_click_black');
+        })
+    }
+</script>
+</body>
+</html>
